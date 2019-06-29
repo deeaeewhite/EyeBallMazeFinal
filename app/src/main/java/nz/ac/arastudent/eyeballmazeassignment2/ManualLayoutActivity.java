@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,26 +14,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import nz.ac.arastudent.eyeballmazeassignment2.MainActivity;
-
 public class ManualLayoutActivity extends MainActivity {
 
     SharedPreferences sharedPreferences = null;
     public Button[][] buttons = new Button[6][4];
-    ToggleButton soundToggle;
-    @Override
+    Switch switchSound;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_layout);
@@ -48,11 +43,11 @@ public class ManualLayoutActivity extends MainActivity {
         TextView movesLeft = findViewById(R.id.movesLeft);
         movesLeft.setText(myModel.getMovesLeft().toString());
 
-        soundToggle = findViewById(R.id.soundToggle);
-        soundToggle.setOnClickListener(new View.OnClickListener() {
+        switchSound = findViewById(R.id.switchSound);
+        switchSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(soundToggle.isChecked()){
+                if(switchSound.isChecked()){
                     unmute();
                 }
                 else{
@@ -62,52 +57,52 @@ public class ManualLayoutActivity extends MainActivity {
         });
 
         //Set button
-        buttons[0][0] = (Button)findViewById(R.id.grid00);
-        buttons[0][1] = (Button)findViewById(R.id.grid10);
-        buttons[0][2] = (Button)findViewById(R.id.grid20);
-        buttons[0][3] = (Button)findViewById(R.id.grid30);
+        buttons[0][0] = findViewById(R.id.grid00);
+        buttons[0][1] = findViewById(R.id.grid10);
+        buttons[0][2] = findViewById(R.id.grid20);
+        buttons[0][3] = findViewById(R.id.grid30);
 
-        buttons[1][0] = (Button)findViewById(R.id.grid01);
-        buttons[1][1] = (Button)findViewById(R.id.grid11);
-        buttons[1][2] = (Button)findViewById(R.id.grid21);
-        buttons[1][3] = (Button)findViewById(R.id.grid31);
+        buttons[1][0] = findViewById(R.id.grid01);
+        buttons[1][1] = findViewById(R.id.grid11);
+        buttons[1][2] = findViewById(R.id.grid21);
+        buttons[1][3] = findViewById(R.id.grid31);
 
-        buttons[2][0] = (Button)findViewById(R.id.grid02);
-        buttons[2][1] = (Button)findViewById(R.id.grid12);
-        buttons[2][2] = (Button)findViewById(R.id.grid22);
-        buttons[2][3] = (Button)findViewById(R.id.grid32);
+        buttons[2][0] = findViewById(R.id.grid02);
+        buttons[2][1] = findViewById(R.id.grid12);
+        buttons[2][2] = findViewById(R.id.grid22);
+        buttons[2][3] = findViewById(R.id.grid32);
 
-        buttons[3][0] = (Button)findViewById(R.id.grid03);
-        buttons[3][1] = (Button)findViewById(R.id.grid13);
-        buttons[3][2] = (Button)findViewById(R.id.grid23);
-        buttons[3][3] = (Button)findViewById(R.id.grid33);
+        buttons[3][0] = findViewById(R.id.grid03);
+        buttons[3][1] = findViewById(R.id.grid13);
+        buttons[3][2] = findViewById(R.id.grid23);
+        buttons[3][3] = findViewById(R.id.grid33);
 
-        buttons[4][0] = (Button)findViewById(R.id.grid04);
-        buttons[4][1] = (Button)findViewById(R.id.grid14);
-        buttons[4][2] = (Button)findViewById(R.id.grid24);
-        buttons[4][3] = (Button)findViewById(R.id.grid34);
+        buttons[4][0] = findViewById(R.id.grid04);
+        buttons[4][1] = findViewById(R.id.grid14);
+        buttons[4][2] = findViewById(R.id.grid24);
+        buttons[4][3] = findViewById(R.id.grid34);
 
-        buttons[5][0] = (Button)findViewById(R.id.grid05);
-        buttons[5][1] = (Button)findViewById(R.id.grid15);
-        buttons[5][2] = (Button)findViewById(R.id.grid25);
-        buttons[5][3] = (Button)findViewById(R.id.grid35);
+        buttons[5][0] = findViewById(R.id.grid05);
+        buttons[5][1] = findViewById(R.id.grid15);
+        buttons[5][2] = findViewById(R.id.grid25);
+        buttons[5][3] = findViewById(R.id.grid35);
 
         this.initialiseGame();
-        startSong(R.raw.scapemain);
+        startSong();
     }
 
-    protected void startSong(int song) {
-        MediaPlayer gameSong = MediaPlayer.create(this, song);
+    protected void startSong() {
+        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.lifeforce);
         gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
         gameSong.setLooping(true);
         gameSong.start();
 
-        soundToggle = findViewById(R.id.soundToggle);
-        soundToggle.isChecked();
-        soundToggle.setOnClickListener(new View.OnClickListener() {
+        switchSound = findViewById(R.id.switchSound);
+        switchSound.isChecked();
+        switchSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (soundToggle.isChecked()) {
+                if (switchSound.isChecked()) {
                     unmute();
                 } else {
                     mute();
@@ -157,7 +152,8 @@ public class ManualLayoutActivity extends MainActivity {
     }
 
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
         System.out.println(map);
         String[] rows = map.split(":");
@@ -179,7 +175,8 @@ public class ManualLayoutActivity extends MainActivity {
         myModel.setGoalCount(sharedPreferences.getString("goalsLeft", "None"));
         myModel.setMovesLeft(sharedPreferences.getString("movesLeft", "None"));
         myModel.setMoveCount(sharedPreferences.getString("moveCount", "None"));
-        Toast.makeText(ManualLayoutActivity.this, "Game Loaded!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ManualLayoutActivity.this, "Game Loaded!",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void saveLevel() {
@@ -199,7 +196,8 @@ public class ManualLayoutActivity extends MainActivity {
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
@@ -213,7 +211,8 @@ public class ManualLayoutActivity extends MainActivity {
         editor.apply();
 
 
-        Toast.makeText(ManualLayoutActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ManualLayoutActivity.this, "Game Saved!",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -245,7 +244,8 @@ public class ManualLayoutActivity extends MainActivity {
         }
 
         if(id == R.id.action_help){
-            Intent helpIntent = new Intent(ManualLayoutActivity.this, HelpActivity.class);
+            Intent helpIntent = new Intent(ManualLayoutActivity.this,
+                    HelpActivity.class);
             startActivity(helpIntent);
         }
         return super.onOptionsItemSelected(item);
@@ -289,13 +289,12 @@ public class ManualLayoutActivity extends MainActivity {
             Toast.makeText(getApplicationContext(),
                     "You are already on this position", Toast.LENGTH_SHORT).show();
         }
-        // else if (y < currentY && x < currentX || y > currentY && x > currentX) {
-        //   Toast.makeText(getApplicationContext(),
-        //         "You can only move left, right or forward", Toast.LENGTH_SHORT).show();
-        //}
-        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY && x < currentX || y > currentY && x > currentX) {
+
+        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY &&
+                x < currentX || y > currentY && x > currentX) {
             Toast.makeText(getApplicationContext(),
-                    "You can't move diagonal, only left, right or forward.", Toast.LENGTH_SHORT).show();
+                    "You can't move diagonal, only left, right or forward.",
+                    Toast.LENGTH_SHORT).show();
         }
         else {
 
@@ -316,7 +315,7 @@ public class ManualLayoutActivity extends MainActivity {
             //check move isn't backwards
             String isBackwards = this.myModel.makeMove(direction, distance);
 
-            Point point = getPointOfView(buttons[y][x]);
+            Point point = getCenterOfPointOfView(buttons[y][x]);
             updatePlayer(point.x, point.y);
 
             if (isBackwards != "") {
@@ -335,7 +334,7 @@ public class ManualLayoutActivity extends MainActivity {
         }
     }
 
-    private Point getPointOfView(View view) {
+    private Point getCenterOfPointOfView(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
         return new Point(location[0], location[1]);
@@ -343,23 +342,23 @@ public class ManualLayoutActivity extends MainActivity {
 
     public void updatePlayer(int x, int y){
         String direction = myModel.getPlayerDirection();
-        ImageView player01 = findViewById(R.id.player01);
-        System.out.println(x);
-        System.out.println(y);
-        player01.setX(x);
-        player01.setY(y-50);
+        ImageView playerTile = findViewById(R.id.playerTile);
+//        System.out.println(x);
+//        System.out.println(y);
+        playerTile.setX(x);
+        playerTile.setY(y-60);
 
         if(direction == "U"){
-            player01.setRotation(0);
-        }
-        else if(direction == "L"){
-            player01.setRotation(-90);
-        }
-        else if(direction == "R"){
-            player01.setRotation(90);
+            playerTile.setRotation(0);
         }
         else if(direction == "D"){
-            player01.setRotation(180);
+            playerTile.setRotation(180);
+        }
+        else if(direction == "R"){
+            playerTile.setRotation(90);
+        }
+        else if(direction == "L"){
+            playerTile.setRotation(-90);
         }
     }
     public void initialiseGame(){
@@ -386,11 +385,16 @@ public class ManualLayoutActivity extends MainActivity {
             }
         }
 
-        ImageView player01 = findViewById(R.id.player01);
-        player01.bringToFront();
-        player01.setImageResource(R.drawable.playerimage);
-        player01.setX(182);
-        player01.setY(1038-50);
+        setStartPos();
+    }
+
+    public void setStartPos(){
+        ImageView playerTile = findViewById(R.id.playerTile);
+        playerTile.bringToFront();
+        playerTile.setImageResource(R.drawable.playerchar);
+
+        playerTile.setX(380);
+        playerTile.setY(1120-50);
     }
 
     public void gameWonDialog() {
@@ -433,6 +437,7 @@ public class ManualLayoutActivity extends MainActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         readALevel();
                         myModel.updateMaze();
+                        setStartPos();
                         updateGame();
                     }
                 })

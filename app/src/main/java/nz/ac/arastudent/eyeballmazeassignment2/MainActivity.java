@@ -30,12 +30,7 @@ import nz.ac.arastudent.eyeballmazeassignment2.model.Model;
 public class MainActivity extends AppCompatActivity {
 
     public Button[][] buttons = new Button[6][4];
-    MediaPlayer gameSong;
 
-
-    public Toolbar myToolbar;
-
-    SharedPreferences sharedPreferences = null;
 
     public IGame myModel = new Model();
 

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ public class ProgrammaticalActivity extends MainActivity {
     public IGame myModel = new Model();
     SharedPreferences sharedPreferences = null;
     public Button[][] buttons = new Button[6][4];
-    ToggleButton soundToggle;
+    Switch switchSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +50,11 @@ public class ProgrammaticalActivity extends MainActivity {
         TextView movesLeft = findViewById(R.id.movesLeft);
         movesLeft.setText(myModel.getMovesLeft().toString());
 
-        soundToggle = findViewById(R.id.soundToggle);
-        soundToggle.setOnClickListener(new View.OnClickListener() {
+        switchSound = findViewById(R.id.switchSound);
+        switchSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(soundToggle.isChecked()){
+                if(switchSound.isChecked()){
                     unmute();
                 }
                 else{
@@ -61,9 +62,10 @@ public class ProgrammaticalActivity extends MainActivity {
                 }
             }
         });
+        createButtons();
 
         this.initialiseGame();
-        startSong(R.raw.gtasa);
+        startSong(R.raw.lifeforce);
     }
 
     private void createButtons(){
@@ -78,7 +80,8 @@ public class ProgrammaticalActivity extends MainActivity {
 
 
                 ViewGroup.LayoutParams params = buttons[y][x].getLayoutParams();
-                btn.setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                btn.setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.
+                        WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                 params.width = R.integer.buttonSize;
                 params.height = R.integer.buttonSize;
@@ -93,12 +96,12 @@ public class ProgrammaticalActivity extends MainActivity {
         gameSong.setLooping(true);
         gameSong.start();
 
-        soundToggle = findViewById(R.id.soundToggle);
-        soundToggle.isChecked();
-        soundToggle.setOnClickListener(new View.OnClickListener() {
+        switchSound = findViewById(R.id.switchSound);
+        switchSound.isChecked();
+        switchSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (soundToggle.isChecked()) {
+                if (switchSound.isChecked()) {
                     unmute();
                 } else {
                     mute();
@@ -149,7 +152,8 @@ public class ProgrammaticalActivity extends MainActivity {
     }
 
     private void loadLevel() {
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
         System.out.println(map);
         String[] rows = map.split(":");
@@ -171,7 +175,8 @@ public class ProgrammaticalActivity extends MainActivity {
         myModel.setGoalCount(sharedPreferences.getString("goalsLeft", "None"));
         myModel.setMovesLeft(sharedPreferences.getString("movesLeft", "None"));
         myModel.setMoveCount(sharedPreferences.getString("moveCount", "None"));
-        Toast.makeText(ProgrammaticalActivity.this, "Game Loaded!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ProgrammaticalActivity.this, "Game Loaded!",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void saveLevel() {
@@ -191,7 +196,8 @@ public class ProgrammaticalActivity extends MainActivity {
             }
         }
 
-        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent.eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
+        this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
+                "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
@@ -205,7 +211,8 @@ public class ProgrammaticalActivity extends MainActivity {
         editor.apply();
 
 
-        Toast.makeText(ProgrammaticalActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ProgrammaticalActivity.this, "Game Saved!",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -237,7 +244,8 @@ public class ProgrammaticalActivity extends MainActivity {
         }
 
         if(id == R.id.action_help){
-            Intent helpIntent = new Intent(ProgrammaticalActivity.this, HelpActivity.class);
+            Intent helpIntent = new Intent(ProgrammaticalActivity.this,
+                    HelpActivity.class);
             startActivity(helpIntent);
         }
         return super.onOptionsItemSelected(item);
@@ -280,13 +288,12 @@ public class ProgrammaticalActivity extends MainActivity {
             Toast.makeText(getApplicationContext(),
                     "You are already on this position", Toast.LENGTH_SHORT).show();
         }
-        // else if (y < currentY && x < currentX || y > currentY && x > currentX) {
-        //   Toast.makeText(getApplicationContext(),
-        //         "You can only move left, right or forward", Toast.LENGTH_SHORT).show();
-        //}
-        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY && x < currentX || y > currentY && x > currentX) {
+
+        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY &&
+                x < currentX || y > currentY && x > currentX) {
             Toast.makeText(getApplicationContext(),
-                    "You can't move diagonal, only left, right or forward.", Toast.LENGTH_SHORT).show();
+                    "You can't move diagonal, only left, right or forward.",
+                    Toast.LENGTH_SHORT).show();
         }
         else {
             if (y < currentY) {
