@@ -30,6 +30,7 @@ public class ManualLayoutActivity extends MainActivity {
     SharedPreferences sharedPreferences = null;
     public Button[][] buttons = new Button[6][4];
     Switch switchSound;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_layout);
@@ -392,7 +393,7 @@ public class ManualLayoutActivity extends MainActivity {
         ImageView playerTile = findViewById(R.id.playerTile);
         playerTile.bringToFront();
         playerTile.setImageResource(R.drawable.playerchar);
-
+        playerTile.setRotation(0);
         playerTile.setX(380);
         playerTile.setY(1120-50);
     }
