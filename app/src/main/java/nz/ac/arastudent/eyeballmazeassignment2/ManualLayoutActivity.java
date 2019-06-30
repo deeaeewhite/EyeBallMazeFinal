@@ -91,7 +91,7 @@ public class ManualLayoutActivity extends MainActivity {
         buttons[5][2] = findViewById(R.id.grid25);
         buttons[5][3] = findViewById(R.id.grid35);
 
-        this.initialiseGame();
+        this.startGame();
     }
 
     protected void onDestroy(){
@@ -177,7 +177,6 @@ public class ManualLayoutActivity extends MainActivity {
         this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
                 "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
-//        System.out.println(map);
         assert map != null;
         String[] rows = map.split(":");
 
@@ -198,7 +197,7 @@ public class ManualLayoutActivity extends MainActivity {
         myModel.setGoalCount(sharedPreferences.getString("goalsLeft", "None"));
         myModel.setMovesLeft(sharedPreferences.getString("movesLeft", "None"));
         myModel.setMoveCount(sharedPreferences.getString("moveCount", "None"));
-        Toast.makeText(ManualLayoutActivity.this, "Game Loaded!",
+        Toast.makeText(ManualLayoutActivity.this, "Game Loaded",
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -213,18 +212,18 @@ public class ManualLayoutActivity extends MainActivity {
     }
 
     private void saveLevel() {
-        String[][] currentState = myModel.getGameMap();
+        String[][] initialState = myModel.getGameMap();
         StringBuilder myMap = new StringBuilder();
 
-        for (int y = 0; y < currentState.length; ++y) {
-            for (int x = 0; x < currentState[y].length; ++x) {
-                String pos = currentState[y][x];
+        for (int y = 0; y < initialState.length; ++y) {
+            for (int x = 0; x < initialState[y].length; ++x) {
+                String pos = initialState[y][x];
                 myMap.append(pos);
-                if (x != currentState[y].length) {
+                if (x != initialState[y].length) {
                     myMap.append(",");
                 }
             }
-            if (y != currentState.length - 1){
+            if (y != initialState.length - 1){
                 myMap.append(":");
             }
         }
@@ -236,10 +235,13 @@ public class ManualLayoutActivity extends MainActivity {
 
         editor.putString("theMap", myMap.toString());
         editor.apply();
-        editor.putString("goalsLeft", myModel.getGoalCount());
-        editor.apply();
+
         editor.putString("movesLeft", myModel.getMovesLeft().toString());
         editor.apply();
+
+        editor.putString("goalsLeft", myModel.getGoalCount());
+        editor.apply();
+
         editor.putString("moveCount", myModel.getMoveCount());
         editor.apply();
 
@@ -321,41 +323,43 @@ public class ManualLayoutActivity extends MainActivity {
     public void checkMove(int x, int y){
         this.myModel.updateMaze();
         Integer[] currentPos = this.myModel.getPlayerLocation();
-        int currentX = currentPos[0];
-        int currentY = currentPos[1];
-        String direction = "";
-        int distance = 0;
-        if (x == currentX && y == currentY){
+        int initialX = currentPos[0];
+        int initialY = currentPos[1];
+        String dir = "";
+        int dist = 0;
+        if (x == initialX && y == initialY){
             Toast.makeText(getApplicationContext(),
                     "You are already on this position", Toast.LENGTH_SHORT).show();
         }
 
-        else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY &&
-                x < currentX || y > currentY && x > currentX) {
+        else if (y < initialY && x < initialX ||
+                y < initialY && x > initialX ||
+                y > initialY && x < initialX ||
+                y > initialY && x > initialX) {
             Toast.makeText(getApplicationContext(),
                     "Cannot move diagonally, only left, right or forward.",
                     Toast.LENGTH_SHORT).show();
         }
         else {
 
-            if (y < currentY) {
-                direction = "W";
-                distance = currentY - y;
-            } else if (y > currentY) {
-                direction = "S";
-                distance = y - currentY;
-            } else if (x < currentX) {
-                direction = "A";
-                distance = currentX - x;
-            } else if (x > currentX) {
-                direction = "D";
-                distance = x - currentX;
+            if (y < initialY) {
+                dir = "W";
+                dist = initialY - y;
+            } else if (y > initialY) {
+                dir = "S";
+                dist = y - initialY;
+            } else if (x < initialX) {
+                dir = "A";
+                dist = initialX - x;
+            } else if (x > initialX) {
+                dir = "D";
+                dist = x - initialX;
             }
 
 
 
             //check move isn't backwards
-            String isBackwards = this.myModel.makeMove(direction, distance);
+            String isBackwards = this.myModel.makeMove(dir, dist);
 
             if (!isBackwards.equals("")) {
                 Toast.makeText(getApplicationContext(),
@@ -409,7 +413,7 @@ public class ManualLayoutActivity extends MainActivity {
         }
     }
 
-    public void initialiseGame(){
+    public void startGame(){
         this.myModel.updateMaze();
 
         TextView textView = findViewById(R.id.GoalCounter);
@@ -423,11 +427,12 @@ public class ManualLayoutActivity extends MainActivity {
                 Button aButton = this.buttons[y][x];
                 aButton.setText(this.myModel.getItem(x, y));
 
-                final int weirdX = x;
-                final int weirdY = y;
+                final int randomX = x;
+                final int randomY = y;
+
                 aButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view){
-                        checkMove(weirdX, weirdY);
+                        checkMove(randomX, randomY);
                     }
                 });
             }
