@@ -60,7 +60,7 @@ public class ManualLayoutActivity extends MainActivity {
             }
         });
 
-        //Set button
+        // Set Grid buttons
         buttons[0][0] = findViewById(R.id.grid00);
         buttons[0][1] = findViewById(R.id.grid10);
         buttons[0][2] = findViewById(R.id.grid20);
@@ -94,6 +94,29 @@ public class ManualLayoutActivity extends MainActivity {
         this.initialiseGame();
     }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        gameSong.stop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gameSong.stop();
+    }
+
+    protected void onRestart() {
+
+        super.onRestart();
+        gameSong.start();
+    }
+
+    public void exitActivity(){
+        Intent exitIntent = new Intent(ManualLayoutActivity.this, MainActivity.class);
+        startActivity(exitIntent);
+        gameSong.stop();
+    }
+
     protected void startSong() {
         gameSong = MediaPlayer.create(this, R.raw.lifeforce);
         gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -107,16 +130,14 @@ public class ManualLayoutActivity extends MainActivity {
         gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
         gameSong.start();
     }
-
+    //mute sound
     protected void mute() {
-        //mute audio
         AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
     }
 
-
+    //unmute sound
     protected void unmute() {
-        //unmute audio
         AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
     }
@@ -144,6 +165,9 @@ public class ManualLayoutActivity extends MainActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ImageView playerTile = findViewById(R.id.playerTile);
+        playerTile.bringToFront();
+        playerTile.setImageResource(R.drawable.playerchar);
 
         myModel.setMoveCount("0");
         myModel.setMovesLeft("10");
@@ -153,7 +177,8 @@ public class ManualLayoutActivity extends MainActivity {
         this.sharedPreferences = getSharedPreferences("nz.ac.arastudent." +
                 "eyeballmazeassignment2.savedLevel.txt", Context.MODE_PRIVATE);
         String map = sharedPreferences.getString("theMap", "None");
-        System.out.println(map);
+//        System.out.println(map);
+        assert map != null;
         String[] rows = map.split(":");
 
         int y = 0;
@@ -189,18 +214,18 @@ public class ManualLayoutActivity extends MainActivity {
 
     private void saveLevel() {
         String[][] currentState = myModel.getGameMap();
-        String myMap = "";
+        StringBuilder myMap = new StringBuilder();
 
         for (int y = 0; y < currentState.length; ++y) {
             for (int x = 0; x < currentState[y].length; ++x) {
                 String pos = currentState[y][x];
-                myMap += pos;
+                myMap.append(pos);
                 if (x != currentState[y].length) {
-                    myMap += ",";
+                    myMap.append(",");
                 }
             }
             if (y != currentState.length - 1){
-                myMap += ":";
+                myMap.append(":");
             }
         }
 
@@ -209,7 +234,7 @@ public class ManualLayoutActivity extends MainActivity {
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         //editor.clear();
 
-        editor.putString("theMap", myMap);
+        editor.putString("theMap", myMap.toString());
         editor.apply();
         editor.putString("goalsLeft", myModel.getGoalCount());
         editor.apply();
@@ -218,6 +243,9 @@ public class ManualLayoutActivity extends MainActivity {
         editor.putString("moveCount", myModel.getMoveCount());
         editor.apply();
 
+        Point point = getCurrentPosition();
+        editor.putString("playerX", Integer.toString(point.x));
+        editor.putString("playerY", Integer.toString(point.y));
 
         Toast.makeText(ManualLayoutActivity.this, "Game Saved!",
                 Toast.LENGTH_SHORT).show();
@@ -257,6 +285,9 @@ public class ManualLayoutActivity extends MainActivity {
                     HelpActivity.class);
             startActivity(helpIntent);
         }
+        if(id == R.id.action_exit){
+            exitActivity();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -284,7 +315,7 @@ public class ManualLayoutActivity extends MainActivity {
 
         TextView movesLeft = findViewById(R.id.movesLeft);
         movesLeft.setText(myModel.getMovesLeft().toString());
-
+        updatePlayer();
     }
 
     public void checkMove(int x, int y){
@@ -302,7 +333,7 @@ public class ManualLayoutActivity extends MainActivity {
         else if (y < currentY && x < currentX || y < currentY && x > currentX || y > currentY &&
                 x < currentX || y > currentY && x > currentX) {
             Toast.makeText(getApplicationContext(),
-                    "You can't move diagonal, only left, right or forward.",
+                    "Cannot move diagonally, only left, right or forward.",
                     Toast.LENGTH_SHORT).show();
         }
         else {
@@ -321,41 +352,46 @@ public class ManualLayoutActivity extends MainActivity {
                 distance = x - currentX;
             }
 
+
+
             //check move isn't backwards
             String isBackwards = this.myModel.makeMove(direction, distance);
 
-            Point point = getCenterOfPointOfView(buttons[y][x]);
-            updatePlayer(point.x, point.y);
-
-            if (isBackwards != "") {
+            if (!isBackwards.equals("")) {
                 Toast.makeText(getApplicationContext(),
                         isBackwards, Toast.LENGTH_SHORT).show();
             }
             //check if complete
             if (myModel.isComplete()){
                 if(Integer.parseInt(myModel.getGoalCount()) == 0) {
-                    gameWonDialog();
+                    playerWonDialog();
                 } else if (myModel.getMovesLeft() == 0) {
-                    gameLostDialog();
+                    playerLostDialog();
                 }
             }
             updateGame();
         }
     }
 
-    private Point getCenterOfPointOfView(View view) {
+    public Point getCurrentPosition(){
+        Integer[] pos = myModel.getPlayerLocation();
+        Button currentButton = buttons[pos[1]][ pos[0]];
+        Point point = getPointOfView(currentButton);
+        return point;
+    }
+
+    private Point getPointOfView(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
         return new Point(location[0], location[1]);
     }
 
-    public void updatePlayer(int x, int y){
+    public void updatePlayer(){
         String direction = myModel.getPlayerDirection();
         ImageView playerTile = findViewById(R.id.playerTile);
-//        System.out.println(x);
-//        System.out.println(y);
-        playerTile.setX(x);
-        playerTile.setY(y-60);
+        Point point = getCurrentPosition();
+        playerTile.setX(point.x);
+        playerTile.setY(point.y-60);
 
         switch (direction) {
             case "U":
@@ -396,11 +432,10 @@ public class ManualLayoutActivity extends MainActivity {
                 });
             }
         }
-
         setStartPos();
     }
 
-    public void gameWonDialog() {
+    public void playerWonDialog() {
         playSoundEffect(winnerSound);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -416,7 +451,7 @@ public class ManualLayoutActivity extends MainActivity {
                 })
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
+                        exitActivity();
                     }
                 });
 
@@ -425,7 +460,7 @@ public class ManualLayoutActivity extends MainActivity {
         dialog.show();
     }
 
-    public void gameLostDialog() {
+    public void playerLostDialog() {
         playSoundEffect(loserSound);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -441,7 +476,7 @@ public class ManualLayoutActivity extends MainActivity {
                 })
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
+                        exitActivity();
                     }
                 });
 

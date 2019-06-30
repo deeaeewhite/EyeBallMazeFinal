@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Button programmaticLayout = findViewById(R.id.btnProgrammatic);
         programmaticLayout.setOnClickListener(new View.OnClickListener() {
             @Override

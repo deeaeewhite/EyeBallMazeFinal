@@ -36,12 +36,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="GoalCounter: "
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="7dp"
+        android:text="Goal Counter: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_toolbar" />
 
@@ -50,9 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_toolbar"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="6dp"
         android:layout_toEndOf="@+id/textView2"
         android:layout_toRightOf="@+id/textView2"
         app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -63,10 +59,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_toolbar"
-        android:layout_marginStart="46dp"
-        android:layout_marginLeft="46dp"
+        android:layout_marginLeft="25dp"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/GoalCounter"
         android:layout_toRightOf="@+id/GoalCounter"
         android:text="Move Counter: "
         app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -77,35 +71,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_toolbar"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="8dp"
         android:layout_toEndOf="@+id/textView4"
+        android:layout_toRightOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/game_toolbar"
-        android:layout_toRightOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/game_toolbar" />
 
     <TextView
         android:id="@+id/moves"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/game_toolbar"
         android:layout_marginTop="8dp"
-        android:text="Moves Left: "
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_toolbar"/>
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@id/MoveCounter"
+        android:text="Moves Left: " />
+
 
     <TextView
         android:id="@+id/movesLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_toolbar"
-        android:layout_marginStart="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="35dp"
-        android:layout_toEndOf="@+id/moves"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/moves"
         android:text="0" />
 
@@ -113,13 +103,14 @@
         android:id="@+id/switchSound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/game_toolbar"
         android:layout_alignEnd="@+id/game_toolbar"
         android:layout_alignRight="@+id/game_toolbar"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:text="Sound On/Off"
+        android:layout_alignBottom="@+id/game_toolbar"
+        android:layout_marginEnd="49dp"
+        android:layout_marginRight="49dp"
+        android:layout_marginBottom="13dp"
+        android:checked="true"
+        android:text="Sound Off/On"
         android:textColor="@android:color/white" />
 
     <GridLayout

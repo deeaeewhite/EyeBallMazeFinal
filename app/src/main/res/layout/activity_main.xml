@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/ic_launcher_background">
 
     <TextView
         android:id="@+id/textView10"
@@ -14,6 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:text="EyeBall Logic Maze"
+        android:textColor="@android:color/white"
         android:textSize="38sp"
         android:textStyle="bold" />
 
@@ -24,8 +26,10 @@
         android:layout_below="@+id/textView10"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
+        android:background="@android:color/holo_red_light"
         android:gravity="center"
         android:text="Play Manual View"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -39,7 +43,10 @@
         android:layout_marginStart="82dp"
         android:layout_marginLeft="82dp"
         android:layout_marginTop="61dp"
+        android:background="@android:color/holo_red_light"
         android:text="Play Programmatical View"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/darker_gray"
         android:textSize="18sp"
         android:textStyle="bold" />
 
