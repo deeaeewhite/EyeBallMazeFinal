@@ -6,28 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnManual"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView10"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="78dp"
-        android:gravity="center"
-        android:layout_marginTop="34dp"
-        android:text="Play Manual Layout" />
-
-    <Button
-        android:id="@+id/btnProgrammatic"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnManual"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="78dp"
-        android:layout_marginTop="52dp"
-        android:text="Play Programmatical Layout" />
-
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
@@ -36,6 +14,35 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:text="EyeBall Logic Maze"
-        android:textSize="38sp" />
+        android:textSize="38sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnManual"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView10"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:gravity="center"
+        android:text="Play Manual View"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnProgrammatic"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnManual"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="82dp"
+        android:layout_marginLeft="82dp"
+        android:layout_marginTop="61dp"
+        android:text="Play Programmatical View"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
 
 </RelativeLayout>

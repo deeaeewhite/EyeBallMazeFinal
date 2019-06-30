@@ -30,6 +30,9 @@ public class ManualLayoutActivity extends MainActivity {
     SharedPreferences sharedPreferences = null;
     public Button[][] buttons = new Button[6][4];
     Switch switchSound;
+    MediaPlayer gameSong;
+    int winnerSound = R.raw.winner;
+    int loserSound = R.raw.loser;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,28 +92,22 @@ public class ManualLayoutActivity extends MainActivity {
         buttons[5][3] = findViewById(R.id.grid35);
 
         this.initialiseGame();
-        startSong();
     }
 
     protected void startSong() {
-        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.lifeforce);
+        gameSong = MediaPlayer.create(this, R.raw.lifeforce);
         gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
         gameSong.setLooping(true);
         gameSong.start();
-
-        switchSound = findViewById(R.id.switchSound);
-        switchSound.isChecked();
-        switchSound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (switchSound.isChecked()) {
-                    unmute();
-                } else {
-                    mute();
-                }
-            }
-        });
     }
+
+    public void playSoundEffect( int song){
+        gameSong.stop();
+        gameSong = MediaPlayer.create(this, song);
+        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        gameSong.start();
+    }
+
     protected void mute() {
         //mute audio
         AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -180,6 +177,16 @@ public class ManualLayoutActivity extends MainActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
+    public void setStartPos(){
+        ImageView playerTile = findViewById(R.id.playerTile);
+        playerTile.bringToFront();
+        playerTile.setImageResource(R.drawable.playerchar);
+        playerTile.setRotation(0);
+        playerTile.setX(380);
+        playerTile.setY(1120-50);
+        startSong();
+    }
+
     private void saveLevel() {
         String[][] currentState = myModel.getGameMap();
         String myMap = "";
@@ -242,6 +249,7 @@ public class ManualLayoutActivity extends MainActivity {
             readALevel();
             this.myModel.updateMaze();
             updateGame();
+            setStartPos();
         }
 
         if(id == R.id.action_help){
@@ -349,19 +357,22 @@ public class ManualLayoutActivity extends MainActivity {
         playerTile.setX(x);
         playerTile.setY(y-60);
 
-        if(direction == "U"){
-            playerTile.setRotation(0);
-        }
-        else if(direction == "D"){
-            playerTile.setRotation(180);
-        }
-        else if(direction == "R"){
-            playerTile.setRotation(90);
-        }
-        else if(direction == "L"){
-            playerTile.setRotation(-90);
+        switch (direction) {
+            case "U":
+                playerTile.setRotation(0);
+                break;
+            case "D":
+                playerTile.setRotation(180);
+                break;
+            case "R":
+                playerTile.setRotation(90);
+                break;
+            case "L":
+                playerTile.setRotation(-90);
+                break;
         }
     }
+
     public void initialiseGame(){
         this.myModel.updateMaze();
 
@@ -389,17 +400,8 @@ public class ManualLayoutActivity extends MainActivity {
         setStartPos();
     }
 
-    public void setStartPos(){
-        ImageView playerTile = findViewById(R.id.playerTile);
-        playerTile.bringToFront();
-        playerTile.setImageResource(R.drawable.playerchar);
-        playerTile.setRotation(0);
-        playerTile.setX(380);
-        playerTile.setY(1120-50);
-    }
-
     public void gameWonDialog() {
-
+        playSoundEffect(winnerSound);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -409,6 +411,7 @@ public class ManualLayoutActivity extends MainActivity {
                         readALevel();
                         myModel.updateMaze();
                         updateGame();
+                        setStartPos();
                     }
                 })
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
@@ -417,19 +420,13 @@ public class ManualLayoutActivity extends MainActivity {
                     }
                 });
 
-        // 3. Get the AlertDialog from create()
+        // Build new AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
-
-        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.winner);
-        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        gameSong.start();
     }
 
     public void gameLostDialog() {
-        MediaPlayer gameSong = MediaPlayer.create(this, R.raw.loser);
-        gameSong.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        gameSong.start();
+        playSoundEffect(loserSound);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -448,7 +445,7 @@ public class ManualLayoutActivity extends MainActivity {
                     }
                 });
 
-        // 3. Get the AlertDialog from create()
+        // Build new AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
     }
